@@ -17,7 +17,8 @@ public class PlayerController : MonoBehaviour
     [Header("Throw based")]
     [SerializeField] float ctrlPitchFactor = -10f;
     [SerializeField] float ctrlRollFactor = -20f;
-
+    [Header("Firing")]
+    [SerializeField] GameObject[] guns;
     float horizontalThrow, verticalThrow;
     bool isControlEnabled = true;
 
@@ -34,6 +35,7 @@ public class PlayerController : MonoBehaviour
         {
             ProcessTranslation();
             ProcessRotation();
+            ProcessFiring();
         }
     }
 
@@ -66,6 +68,36 @@ public class PlayerController : MonoBehaviour
 
         //  Move the ship
         transform.localPosition = new Vector3(clampedXOffset, clampedYOffset, transform.localPosition.z);
+    }
+
+    private void ProcessFiring()
+    {
+        ActivateFiring();
+        DeactivateFiring();
+    }
+
+    private void ActivateFiring()
+    {
+        if (CrossPlatformInputManager.GetButtonDown("Fire"))
+        {
+            foreach (GameObject gun in guns)
+            {
+                gun.GetComponent<ParticleSystem>().Play();
+                Debug.Log(gun.GetComponent<ParticleSystem>().isPlaying);
+            }
+        }  
+    }
+
+    private void DeactivateFiring()
+    {
+        if (CrossPlatformInputManager.GetButtonUp("Fire"))
+        {
+            foreach (GameObject gun in guns)
+            {
+                gun.GetComponent<ParticleSystem>().Stop();
+                Debug.Log(gun.GetComponent<ParticleSystem>().isPlaying);
+            }
+        }
     }
 
     void OnPlayerDeath()
