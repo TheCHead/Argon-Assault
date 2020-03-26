@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour
 
     private void ProcessRotation()
     {
+        // todo Fix wrong rotation order along axes 
         float pitch = posPitchFactor * transform.localPosition.y + ctrlPitchFactor * verticalThrow;
         float yaw = posYawFactor * transform.localPosition.x;
         float roll = ctrlRollFactor * horizontalThrow;
@@ -54,22 +55,22 @@ public class PlayerController : MonoBehaviour
 
     private void ProcessTranslation()
     {
+        //  Calculation of X offset based on control throw and screen restrictions
         horizontalThrow = CrossPlatformInputManager.GetAxis("Horizontal");
         float xOffset = horizontalThrow * moveSpeed * Time.deltaTime;
         float clampedXOffset = Mathf.Clamp(xOffset + transform.localPosition.x, -xRange, xRange);
-
+        //  Calculation of Y offset based on control throw and screen restrictions
         verticalThrow = CrossPlatformInputManager.GetAxis("Vertical");
         float yOffset = verticalThrow * moveSpeed * Time.deltaTime;
         float clampedYOffset = Mathf.Clamp(yOffset + transform.localPosition.y, -downRange, upRange);
 
-
+        //  Move the ship
         transform.localPosition = new Vector3(clampedXOffset, clampedYOffset, transform.localPosition.z);
     }
 
     void OnPlayerDeath()
     {
         isControlEnabled = false;
-        
     }
 
 }
