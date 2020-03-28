@@ -8,6 +8,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] GameObject enemyDeathVFX;
     [SerializeField] Transform instanceParent;
     [SerializeField] int killPoints = 100;
+    [SerializeField] int hitsLeft = 5;
 
     private void Start()
     {
@@ -25,9 +26,18 @@ public class Enemy : MonoBehaviour
 
     private void OnParticleCollision(GameObject other)
     {
-        //  Add to score
-        FindObjectOfType<ScoreBoard>().ScoreHit(killPoints);
-        
+        hitsLeft--;
+        if (hitsLeft <= 0)
+        {
+            KillEnemy();
+            
+            //  Add to score
+            FindObjectOfType<ScoreBoard>().ScoreHit(killPoints);
+        }
+    }
+
+    private void KillEnemy()
+    {
         //  Instantiate death FX under "Runtime instances" parent
         GameObject fx = Instantiate(enemyDeathVFX, transform.position, Quaternion.identity);
         fx.transform.parent = instanceParent;
